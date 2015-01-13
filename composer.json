@@ -1,0 +1,19 @@
+{
+    "name": "mihai-stancu/doctrine2-types-short-guid",
+    "type": "library",
+    "description": "Doctrine2 using MySQL's `UUID_SHORT()` function to generate GUIDs stored as BIGINTs.",
+    "keywords": ["short_guid", "short_uuid", "uuid", "guid", "doctrine2", "mysql", "bigint"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Mihai Stancu",
+            "email": "stancu.t.mihai@gmail.com"
+        }
+    ],
+    "require": {
+        "doctrine/orm": ">=2.1"
+    },
+    "autoload": {
+        "psr-4": { "MS\\Doctrine\\": "lib/" }
+    }
+}
