@@ -6,22 +6,26 @@ use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Platforms\MySqlPlatform;
 use Doctrine\DBAL\Types\GuidType;
 
-class ShortGuidType extends GuidType
+class BinaryGuidType extends GuidType
 {
-    const SHORT_GUID = 'short_guid';
+    const BINARY_GUID = 'binary_guid';
 
     /**
-     * @param array            $fieldDeclaration
+     * @param array            $field
      * @param AbstractPlatform $platform
      *
      * @return string
      */
-    public function getSQLDeclaration(array $fieldDeclaration, AbstractPlatform $platform)
+    public function getSQLDeclaration(array $field, AbstractPlatform $platform)
     {
         if ($platform InstanceOf MySqlPlatform) {
-            return 'BIGINT';
+            $field['length'] = 16;
+            $field['fixed'] = true;
+            $field['type'] = 'binary';
+
+            return parent::getSQLDeclaration($field, $platform);
         } else {
-            return parent::getSQLDeclaration($fieldDeclaration, $platform);
+            return parent::getSQLDeclaration($field, $platform);
         }
     }
 
@@ -35,6 +39,12 @@ class ShortGuidType extends GuidType
     {
         switch (true) {
             case ($platform InstanceOf MySqlPlatform):
+                $value = bin2hex($value);
+                $value = substr($value,  0, 8) . '-'
+                       . substr($value,  8, 4) . '-'
+                       . substr($value, 12, 4) . '-'
+                       . substr($value, 16, 4) . '-'
+                       . substr($value, 20);
                 return $value;
             default:
                 return parent::convertToPHPValue($value, $platform);
@@ -51,6 +61,8 @@ class ShortGuidType extends GuidType
     {
         switch (true) {
             case ($platform InstanceOf MySqlPlatform):
+                $value = str_replace('-', '', $value);
+                $value = hex2bin($value);
                 return $value;
             default:
                 return parent::convertToDatabaseValue($value, $platform);
@@ -72,6 +84,6 @@ class ShortGuidType extends GuidType
      */
     public function getName()
     {
-        return static::SHORT_GUID;
+        return static::BINARY_GUID;
     }
 }
