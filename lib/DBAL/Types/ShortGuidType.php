@@ -8,7 +8,7 @@ use Doctrine\DBAL\Types\GuidType;
 
 class ShortGuidType extends GuidType
 {
-    const SHORT_GUID = 'short_guid';
+    const NAME = 'short_guid';
 
     /**
      * @param array            $fieldDeclaration
@@ -72,6 +72,6 @@ class ShortGuidType extends GuidType
      */
     public function getName()
     {
-        return static::SHORT_GUID;
+        return static::NAME;
     }
 }

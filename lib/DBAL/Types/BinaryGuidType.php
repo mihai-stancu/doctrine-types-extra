@@ -8,7 +8,7 @@ use Doctrine\DBAL\Types\GuidType;
 
 class BinaryGuidType extends GuidType
 {
-    const BINARY_GUID = 'binary_guid';
+    const NAME = 'binary_guid';
 
     /**
      * @param array            $field
@@ -84,6 +84,6 @@ class BinaryGuidType extends GuidType
      */
     public function getName()
     {
-        return static::BINARY_GUID;
+        return static::NAME;
     }
 }
