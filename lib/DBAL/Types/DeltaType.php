@@ -36,6 +36,17 @@ class DeltaType extends IntegerType
     }
 
     /**
+     * @param mixed            $value
+     * @param AbstractPlatform $platform
+     *
+     * @return mixed
+     */
+    public function convertToPHPValue($value, AbstractPlatform $platform)
+    {
+        return 0;
+    }
+
+    /**
      * @param AbstractPlatform $platform
      *
      * @return bool
