@@ -5,12 +5,13 @@ namespace MS\Doctrine\ORM\Id;
 use Doctrine\DBAL\Platforms\MySqlPlatform;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Id\UuidGenerator;
+use Doctrine\ORM\Mapping\Entity;
 
 class ShortGuidGenerator extends UuidGenerator
 {
     /**
      * @param EntityManager $manager
-     * @param object        $entity
+     * @param Entity        $entity
      *
      * @return string
      */

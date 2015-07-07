@@ -3,10 +3,9 @@
 namespace MS\Doctrine\DBAL\Types;
 
 use Doctrine\DBAL\Platforms\AbstractPlatform;
-use Doctrine\DBAL\Platforms\MySqlPlatform;
-use Doctrine\DBAL\Types\GuidType;
+use Doctrine\DBAL\Types\BinaryType;
 
-class BinaryGuidType extends GuidType
+class BinaryGuidType extends BinaryType
 {
     const NAME = 'binary_guid';
 
@@ -18,15 +17,11 @@ class BinaryGuidType extends GuidType
      */
     public function getSQLDeclaration(array $field, AbstractPlatform $platform)
     {
-        if ($platform InstanceOf MySqlPlatform) {
-            $field['length'] = 16;
-            $field['fixed'] = true;
-            $field['type'] = 'binary';
+        $field['length'] = 16;
+        $field['fixed'] = true;
+        $field['type'] = 'binary';
 
-            return parent::getSQLDeclaration($field, $platform);
-        } else {
-            return parent::getSQLDeclaration($field, $platform);
-        }
+        return $platform->getBinaryTypeDeclarationSQL($field);
     }
 
     /**
@@ -37,18 +32,16 @@ class BinaryGuidType extends GuidType
      */
     public function convertToPHPValue($value, AbstractPlatform $platform)
     {
-        switch (true) {
-            case ($platform InstanceOf MySqlPlatform):
-                $value = bin2hex($value);
-                $value = substr($value,  0, 8) . '-'
-                       . substr($value,  8, 4) . '-'
-                       . substr($value, 12, 4) . '-'
-                       . substr($value, 16, 4) . '-'
-                       . substr($value, 20);
-                return $value;
-            default:
-                return parent::convertToPHPValue($value, $platform);
+        if (empty($value)) {
+            return null;
         }
+
+        $value = (is_resource($value)) ? stream_get_contents($value) : $value;
+        $value = bin2hex($value);
+        $value = sscanf($value, '%8s%4s%4s%4s%12s');
+        $value = vsprintf('%8s-%4s-%4s-%4s-%12s', $value);
+
+        return $value;
     }
 
     /**
@@ -59,14 +52,13 @@ class BinaryGuidType extends GuidType
      */
     public function convertToDatabaseValue($value, AbstractPlatform $platform)
     {
-        switch (true) {
-            case ($platform InstanceOf MySqlPlatform):
-                $value = str_replace('-', '', $value);
-                $value = hex2bin($value);
-                return $value;
-            default:
-                return parent::convertToDatabaseValue($value, $platform);
+        if (empty($value)) {
+            return null;
         }
+
+        $value = str_replace('-', '', $value);
+        $value = hex2bin($value);
+        return $value;
     }
 
     /**
