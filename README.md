@@ -8,6 +8,10 @@ Doctrine2's default GUID works as a native data type for platforms that support 
 
 **N.B.: !!! MySQl's short UUIDs are not standard UUIDs and they are not guaranteed to be unique across (...more than 256...) servers.**
 
+Sets and enums are not supported in Doctrine2 by default but they can be treated as strings in most scenarios.
+
+* SET: `set` is a naive implementation of MySQL's `set` data type represented in PHP as an array of strings. The type only supports generating create statements and implode / explode converters. `SetType` extends `SimpleArrayType`.
+
 ------------------------------------------------------------------------------
 
 Usage
@@ -21,9 +25,15 @@ doctrine:
         types:
             binary_guid: MS\Doctrine\DBAL\Types\BinaryGuidType
             short_guid: MS\Doctrine\DBAL\Types\ShortGuidType
+
+            set: MS\Doctrine\DBAL\Types\SetType
+
+
         mapping_types:
             binary_guid: binary_guid
             short_guid: short_guid
+
+            set: set
 ```
 
 And adding the following Annotation comments in your entity definitions should finish the job:
@@ -44,5 +54,13 @@ or
      * @Column(type="short_guid")
      * @GeneratedValue(strategy="CUSTOM")
      * @CustomIdGenerator(class="MS\Doctrine\ORM\Id\ShortGuidGenerator")
+     */
+```
+
+or
+
+```
+    /**
+     * @Column(type="set", options={ "values"={"value1", "value2"} })
      */
 ```
