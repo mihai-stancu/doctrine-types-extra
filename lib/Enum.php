@@ -6,6 +6,12 @@ use Doctrine\DBAL\Exception\InvalidArgumentException;
 
 class Enum
 {
+    public function __construct()
+    {
+        call_user_func_array(array($this, 'set'), func_get_args());
+    }
+
+
     /** @var array|string[] List of allowed values populated via reflection. */
     protected static $values = array();
 
