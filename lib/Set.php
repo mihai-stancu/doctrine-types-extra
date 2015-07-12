@@ -7,13 +7,15 @@ use Psr\Log\InvalidArgumentException;
 class Set extends Enum
 {
     /**
-     * @param int $position
+     * @param string     $name
+     * @param string|int $value
+     * @param int        $position
      *
-     * @return int
+     * @return array
      */
-    protected static function getIndex($position)
+    protected static function processValue($name, $value, $position)
     {
-        return pow(2, $position);
+        return array($value, pow(2, $position));
     }
 
 
@@ -39,64 +41,113 @@ class Set extends Enum
     }
 
     /**
-     * @param array|string|int $values
+     * @param array|string|int $values,...
      *
      * @throws InvalidArgumentException
      */
-    public function set($values)
+    public function set($values = null)
     {
-        if (func_num_args() > 1) {
-            $values = func_get_args();
-        }
-
-        if (is_string($values)) {
-            $values = array_map('trim', explode(',', $values));
-        }
-
         if (is_array($values)) {
-            $diff = array_diff($values, static::getValues());
-            if (count($diff) > 0) {
-                throw new InvalidArgumentException(
-                    vsprintf(
-                        'Values "%1$s" are not in the list of allowed values: "%2$s".',
-                        array(
-                            implode('", "', $values),
-                            implode('", "', static::getValues()),
-                        )
-                    )
-                );
-            }
+            $this->value = $this->parseArray($values);
+        } elseif (is_string($values) and func_num_args() > 1) {
+            $this->value = $this->parseArray(func_get_args());
+        } elseif (is_string($values)) {
+            $this->value = $this->parseString($values);
         } elseif (is_int($values)) {
-            $integers = array_keys(static::getValues());
-            $total = array_sum($integers);
-            if ($values > $total) {
-                throw new InvalidArgumentException(
-                    vsprintf(
-                        'Values "%1$s" are outside the range of allowed values: "%2$s".',
-                        array(
-                            implode('", "', $values),
-                            implode('", "', static::getValues()),
-                        )
-                    )
-                );
+            $this->value = $this->parseInteger($values);
+        } elseif (is_null($values)) {
+            $this->value = array();
+        }
+    }
+
+    /**
+     * @param int $values
+     *
+     * @return array
+     */
+    private function parseInteger($values)
+    {
+        $newValues = array();
+        $total = 0;
+        foreach (static::getValues() as $integer => $string) {
+            if ($integer & $values) {
+                $newValues[$integer] = static::$values[static::class][$integer];
+                $total += $integer;
             }
         }
 
-        if (is_int($values)) {
-            $this->value = array();
-            foreach (static::$values[static::class] as $integer => $string) {
-                if ($integer & $values) {
-                    $this->value[$integer] = static::$values[static::class][$integer];
-                }
-            }
-        } else {
-            $this->value = array();
-            foreach (static::$values[static::class] as $integer => $string) {
-                if (in_array($string, $values)) {
-                    $this->value[$integer] = $string;
-                }
+        if ($total != $values) {
+            throw new InvalidArgumentException(
+                vsprintf(
+                    'Values "%1$s" are not in the list of allowed values: "%2$s".',
+                    array(
+                        $values,
+                        implode('", "', array_keys(static::getValues())),
+                    )
+                )
+            );
+        }
+
+        return $newValues;
+    }
+
+    /**
+     * @param array $values
+     *
+     * @throws InvalidArgumentException
+     *
+     * @return array
+     */
+    private function parseArray($values)
+    {
+        $newValues = array();
+        foreach (static::getValues() as $integer => $string) {
+            if (in_array($string, $values)) {
+                $newValues[$integer] = $string;
             }
         }
+
+        if ($diff = array_diff($values, $newValues)) {
+            throw new InvalidArgumentException(
+                vsprintf(
+                    'Values "%1$s" are not in the list of allowed values: "%2$s".',
+                    array(
+                        implode('", "', $diff),
+                        implode('", "', static::getValues()),
+                    )
+                )
+            );
+        }
+
+        return $newValues;
+    }
+
+    /**
+     * @param string $value
+     *
+     * @throws InvalidArgumentException
+     *
+     * @return array
+     */
+    private function parseString($value)
+    {
+        $newValues = array();
+        $index = array_search($value, static::getValues());
+        if ($index !== false) {
+            $newValues[$index] = $value;
+        } else {
+            throw new InvalidArgumentException(
+                vsprintf(
+                    'Value "%1$s" is not in the list of allowed values: "%2$s".',
+                    array(
+                        $value,
+                        implode('", "', static::getValues()),
+                    )
+                )
+            );
+        }
+
+        return $newValues;
     }
 
 
@@ -105,6 +156,6 @@ class Set extends Enum
      */
     public function __toString()
     {
-        return implode(', ', $this->value);
+        return implode(', ', (array)$this->value);
     }
 }

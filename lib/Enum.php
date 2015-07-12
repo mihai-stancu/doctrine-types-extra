@@ -4,7 +4,7 @@ namespace MS\Doctrine;
 
 use Doctrine\DBAL\Exception\InvalidArgumentException;
 
-class Enum
+class Enum implements \Serializable, \JsonSerializable
 {
     public function __construct()
     {
@@ -12,7 +12,9 @@ class Enum
     }
 
 
-    /** @var array|string[] List of allowed values populated via reflection. */
+    /**
+     * @var array|string[] List of allowed values populated via reflection.
+     */
     protected static $values = array();
 
     /**
@@ -26,33 +28,59 @@ class Enum
             $position = 0;
             $constants = $reflection->getConstants();
             foreach ($constants as $name => $value) {
-                if (is_int($value)) {
-                    static::$values[static::class][$value] = $name;
-                } else {
-                    $index = static::getIndex($position);
-                    static::$values[static::class][$index] = $value;
-                    $position++;
-                }
+                list($value, $index) = static::processValue($name, $value, $position);
+                static::$values[static::class][$index] = $value;
+                $position++;
             }
+
+            if (!isset(static::$values[static::class][0])) {
+                static::$values[static::class][0] = '';
+            }
+
+            ksort(static::$values[static::class]);
         }
 
         return static::$values[static::class];
     }
 
     /**
-     * @param int $position
+     * @param string     $name
+     * @param string|int $value
+     * @param int        $position
      *
-     * @return int
+     * @return array
      */
-    protected static function getIndex($position)
+    protected static function processValue($name, $value, $position)
     {
-        return $position;
+        if (is_int($value)) {
+            return array($name, $value);
+        } else {
+            return array($value, $position + 1);
+        }
     }
+
 
     /**
      * @var string
      */
     protected $value;
+
+    /**
+     * @return string
+     */
+    public function getValue()
+    {
+        return $this->get();
+    }
+
+    /**
+     * @param string $value
+     */
+    public function setValue($value)
+    {
+        $this->set($value);
+    }
+
 
     /**
      * @param bool $asInteger
@@ -69,37 +97,69 @@ class Enum
     }
 
     /**
-     * @param string|int $values
+     * @param string|int $value
      *
      * @throws InvalidArgumentException
      */
-    public function set($values)
+    public function set($value = null)
     {
-        if (!array_key_exists($values, static::getValues()) and !in_array($values, static::getValues())) {
+        if (!array_key_exists($value, static::getValues()) and !in_array($value, static::getValues())) {
             throw new InvalidArgumentException(
                 vsprintf(
                     'Value "%1$s" is not in list of allowed values: "%2$s".',
                     array(
-                        $values,
+                        $value,
                         implode('", "', static::getValues()),
                     )
                 )
             );
         }
 
-        if (is_int($values)) {
-            $this->value = static::$values[static::class][$values];
+        if (is_int($value)) {
+            $this->value = static::$values[static::class][$value];
         } else {
-            $this->value = $values;
+            $this->value = $value;
         }
     }
 
+
+    /** Integrating with PHP behaviors */
 
     /**
      * @return string
      */
     public function __toString()
     {
-        return $this->value;
+        return (string)$this->value;
+    }
+
+
+    /** Implementing Serializable */
+
+    /**
+     * @return string
+     */
+    public function serialize()
+    {
+        return serialize($this->get());
+    }
+
+    /**
+     * @return string
+     */
+    public function unserialize($data)
+    {
+        $this->set(unserialize($data));
+    }
+
+
+    /** Implementing JsonSerializable */
+
+    /**
+     * @return string|int
+     */
+    public function jsonSerialize()
+    {
+        return $this->get();
     }
 }
