@@ -57,7 +57,13 @@ class BinaryGuidType extends BinaryType
         }
 
         $value = str_replace('-', '', $value);
-        $value = hex2bin($value);
+
+        if (strlen($value) === 32) {
+            $value = hex2bin($value);
+        } elseif (strlen($value) === 22) {
+            $value = base64_decode($value);
+        }
+
         return $value;
     }
 
