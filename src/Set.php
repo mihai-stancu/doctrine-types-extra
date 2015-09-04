@@ -2,7 +2,7 @@
 
 namespace MS\Doctrine;
 
-use Psr\Log\InvalidArgumentException;
+use Doctrine\DBAL\Exception\InvalidArgumentException;
 
 class Set extends Enum
 {
@@ -37,7 +37,7 @@ class Set extends Enum
             return $result;
         }
 
-        return $this->value;
+        return $values;
     }
 
     /**
@@ -47,21 +47,47 @@ class Set extends Enum
      */
     public function set($values = null)
     {
-        if (is_array($values)) {
-            $this->value = $this->parseArray($values);
-        } elseif (is_string($values) and func_num_args() > 1) {
-            $this->value = $this->parseArray(func_get_args());
-        } elseif (is_string($values)) {
-            $this->value = $this->parseString($values);
-        } elseif (is_int($values)) {
-            $this->value = $this->parseInteger($values);
-        } elseif (is_null($values)) {
+        if (func_num_args() > 1) {
+            $this->set(func_num_args());
+
+            return;
+        }
+
+        if (null === $values || '' === $values || 0 === $values || array() === $values) {
             $this->value = array();
+
+            return;
+        }
+
+        if (is_array($values) && array_filter($values, 'is_int') === $values) {
+            $this->value = $this->parseInteger(array_sum($values));
+
+            return;
+        }
+
+        if (is_int($values)) {
+            $this->value = $this->parseInteger($values);
+
+            return;
+        }
+
+        if (is_array($values) && $values === array_filter($values, 'is_string')) {
+            $this->value = $this->parseString(implode(',', $values));
+
+            return;
+        }
+
+        if (is_string($values)) {
+            $this->value = $this->parseString($values);
+
+            return;
         }
     }
 
     /**
      * @param int $values
+     *
+     * @throws InvalidArgumentException
      *
      * @return array
      */
@@ -92,37 +118,6 @@ class Set extends Enum
     }
 
     /**
-     * @param array $values
-     *
-     * @throws InvalidArgumentException
-     *
-     * @return array
-     */
-    private function parseArray($values)
-    {
-        $newValues = array();
-        foreach (static::getValues() as $integer => $string) {
-            if (in_array($string, $values)) {
-                $newValues[$integer] = $string;
-            }
-        }
-
-        if ($diff = array_diff($values, $newValues)) {
-            throw new InvalidArgumentException(
-                vsprintf(
-                    'Values "%1$s" are not in the list of allowed values: "%2$s".',
-                    array(
-                        implode('", "', $diff),
-                        implode('", "', static::getValues()),
-                    )
-                )
-            );
-        }
-
-        return $newValues;
-    }
-
-    /**
      * @param string $value
      *
      * @throws InvalidArgumentException
@@ -131,20 +126,24 @@ class Set extends Enum
      */
     private function parseString($value)
     {
+        $values = explode(',', $value);
+
         $newValues = array();
-        $index = array_search($value, static::getValues());
-        if ($index !== false) {
-            $newValues[$index] = $value;
-        } else {
-            throw new InvalidArgumentException(
-                vsprintf(
-                    'Value "%1$s" is not in the list of allowed values: "%2$s".',
-                    array(
-                        $value,
-                        implode('", "', static::getValues()),
+        foreach ($values as $value) {
+            $index = array_search($value, static::getValues());
+            if ($index !== false) {
+                $newValues[$index] = $value;
+            } else {
+                throw new InvalidArgumentException(
+                    vsprintf(
+                        'Value "%1$s" is not in the list of allowed values: "%2$s".',
+                        array(
+                            $value,
+                            implode('", "', static::getValues()),
+                        )
                     )
-                )
-            );
+                );
+            }
         }
 
         return $newValues;

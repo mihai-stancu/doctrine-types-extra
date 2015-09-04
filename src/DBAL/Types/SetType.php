@@ -24,22 +24,34 @@ class SetType extends EnumType
         }
     }
 
+    /**
+     * @param Set            $values
+     * @param AbstractPlatform $platform
+     *
+     * @return string|null
+     */
+    public function convertToDatabaseValue($values, AbstractPlatform $platform)
+    {
+        if ($values === null || $values === 0 || $values === '') {
+            return null;
+        }
+
+        return implode(',', (array)$values->get());
+    }
 
     /**
-     * @param mixed            $value
+     * @param string           $values
      * @param AbstractPlatform $platform
      *
      * @return array
      */
-    public function convertToPHPValue($value, AbstractPlatform $platform)
+    public function convertToPHPValue($values, AbstractPlatform $platform)
     {
-        if ($value === '') {
-            return array();
-        } elseif ($value === null) {
+        if ($values === null || $values === 0 || $values === '') {
             return array();
         }
 
-        return parent::convertToPHPValue($value, $platform);
+        return explode(',', $values);
     }
 
 

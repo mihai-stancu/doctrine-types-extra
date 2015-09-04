@@ -5,23 +5,21 @@ namespace MS\Doctrine\Tests;
 use MS\Doctrine\Enum;
 use MS\Doctrine\Set;
 
-include '../../../../autoload.php';
-
 class EnumTest extends \PHPUnit_Framework_TestCase
 {
-    public function exampleDataProvider()
+    public function serializationDataProvider()
     {
         $values = array('a', 'b', 'c', 'd');
 
         /* ENUMs by string */
         $cases = array();
         foreach ($values as $value) {
-            $cases[] =  array(new ExampleEnum($value));
+            $cases[] =  array(new ExampleEnum($value), $value);
         }
 
         /* ENUMs by integer */
-        foreach ($values as $i => $_) {
-            $cases[] =  array(new ExampleEnum($i+1));
+        foreach ($values as $i => $v) {
+            $cases[] =  array(new ExampleEnum($i+1), $v);
         }
 
         /* SETs by string */
@@ -52,19 +50,19 @@ class EnumTest extends \PHPUnit_Framework_TestCase
             }
         }
         foreach (array_keys($precases) as $precase) {
-            $cases[] = array(new ExampleSet(explode('-', $precase)));
+            $cases[] = array(new ExampleSet(explode('-', $precase)), explode('-', $precase));
         }
 
         /* SETs by integer */
         for ($value = (2*pow(2, max(array_keys($values)))-1); $value >= 0; $value--) {
-            $cases[] =  array(new ExampleSet($value));
+            $cases[] =  array(new ExampleSet($value), $value);
         }
 
         return $cases;
     }
 
     /**
-     * @dataProvider exampleDataProvider
+     * @dataProvider serializationDataProvider
      *
      * @param $value
      */
@@ -77,7 +75,7 @@ class EnumTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @dataProvider exampleDataProvider
+     * @dataProvider serializationDataProvider
      *
      * @param $value
      */
@@ -88,6 +86,27 @@ class EnumTest extends \PHPUnit_Framework_TestCase
         $decoded = new $class(json_decode($encoded, true));
 
         $this->assertEquals($value, $decoded);
+    }
+
+
+    /**
+     * @dataProvider serializationDataProvider
+     *
+     * @param Enum|Set     $object
+     * @param string|array $value
+     */
+    public function testSetter($object, $value)
+    {
+        $object->set($value);
+
+        if (is_array($value)) {
+            $this->assertEquals($value, array_values($object->get()));
+        } elseif(is_int($value)) {
+            $this->assertEquals($value, $object->get(true));
+        } else {
+            $this->assertEquals($value, $object->get());
+        }
+
     }
 }
 
