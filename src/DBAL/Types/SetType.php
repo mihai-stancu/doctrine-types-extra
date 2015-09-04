@@ -32,7 +32,7 @@ class SetType extends EnumType
      */
     public function convertToDatabaseValue($values, AbstractPlatform $platform)
     {
-        if ($values === null || $values === 0 || $values === '') {
+        if (null === $values || 0 === $values  || '' === $values || array() === $values) {
             return null;
         }
 

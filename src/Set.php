@@ -22,7 +22,7 @@ class Set extends Enum
     /**
      * @param bool $asInteger
      *
-     * @return string|int
+     * @return array|string[]|int
      */
     public function get($asInteger = false)
     {
@@ -54,9 +54,13 @@ class Set extends Enum
         }
 
         if (null === $values || '' === $values || 0 === $values || array() === $values) {
-            $this->value = array();
+            $this->value = null;
 
             return;
+        }
+
+        if ($values InstanceOf Set) {
+            $this->set($values->get());
         }
 
         if (is_array($values) && array_filter($values, 'is_int') === $values) {
