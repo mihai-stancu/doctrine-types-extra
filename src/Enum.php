@@ -53,7 +53,7 @@ class Enum implements \Serializable, \JsonSerializable
     protected static function processValue($name, $value, $position)
     {
         if (is_int($value)) {
-            return array($name, $value);
+            return array(trim($name, '_'), $value);
         } else {
             return array($value, $position + 1);
         }
