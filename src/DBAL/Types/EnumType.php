@@ -15,6 +15,7 @@ class EnumType extends Type
 {
     const NAME = 'enum';
 
+    const DATA_CLASS = '';
 
     /**
      * @param array $field
@@ -25,6 +26,10 @@ class EnumType extends Type
      */
     protected function getValues($field)
     {
+        if (!empty($class = static::DATA_CLASS) and method_exists($class, 'getValues')) {
+            return $class::getValues();
+        }
+
         if (!empty($field['values']) and is_array($field['values'])) {
             return $field['values'];
         }
@@ -81,6 +86,10 @@ class EnumType extends Type
     {
         $value = (is_resource($value)) ? stream_get_contents($value) : $value;
 
+        if (!empty($className = static::DATA_CLASS)) {
+            return new $className($value);
+        }
+
         return $value;
     }
 
@@ -102,7 +111,7 @@ class EnumType extends Type
             $values[] = $platform->quoteStringLiteral($value);
         }
 
-        return strtoupper(static::NAME) . '(' . implode(',', $values) . ')';
+        return 'ENUM(' . implode(',', $values) . ')';
     }
 
 
@@ -122,6 +131,6 @@ class EnumType extends Type
      */
     public function getName()
     {
-        return self::NAME;
+        return static::NAME;
     }
 }

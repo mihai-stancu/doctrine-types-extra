@@ -51,7 +51,34 @@ class SetType extends EnumType
             return array();
         }
 
-        return explode(',', $values);
+        $values = explode(',', $values);
+
+        if (!empty($className = static::DATA_CLASS)) {
+            return new $className($values);
+        }
+
+        return $values;
+    }
+
+
+    /**
+     * @param array            $fieldDeclaration
+     * @param AbstractPlatform $platform
+     *
+     * @throws DBALException
+     *
+     * @return string
+     */
+    public function getSqlDeclaration(array $fieldDeclaration, AbstractPlatform $platform)
+    {
+        $this->checkPlatform($platform);
+
+        $values = array();
+        foreach ($this->getValues($fieldDeclaration) as $value) {
+            $values[] = $platform->quoteStringLiteral($value);
+        }
+
+        return 'SET(' . implode(',', $values) . ')';
     }
 
 
