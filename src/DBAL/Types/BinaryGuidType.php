@@ -4,13 +4,8 @@ namespace MS\Doctrine\DBAL\Types;
 
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Types\BinaryType;
-use Doctrine\DBAL\Types\IntegerType;
 
-class BinaryGuidType extends IntegerType {}
-
-__halt_compiler();
-
-class BinaryGuidType extends extends BinaryType
+class BinaryGuidType extends BinaryType
 {
     const NAME = 'binary_guid';
 

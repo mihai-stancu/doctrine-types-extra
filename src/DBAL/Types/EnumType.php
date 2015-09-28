@@ -107,6 +107,17 @@ class EnumType extends Type
 
 
     /**
+     * @param AbstractPlatform $platform
+     *
+     * @return bool
+     */
+    public function requiresSQLCommentHint(AbstractPlatform $platform)
+    {
+        return true;
+    }
+
+
+    /**
      * @return string
      */
     public function getName()
