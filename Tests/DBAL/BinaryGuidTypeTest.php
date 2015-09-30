@@ -10,7 +10,17 @@ class BinaryGuidTypeTest extends AbstractTypeTest
 {
     public function testGetSQLDeclaration()
     {
-        parent::testGetSQLDeclaration(BinaryGuidType::class);
+        $original = array(
+            'length' => 255,
+            'fixed'  => false,
+            'type'   => 'varchar',
+        );
+        $expected = array(
+            'length' => 16,
+            'fixed'  => true,
+            'type'   => 'binary',
+        );
+        parent::testGetSQLDeclaration(BinaryGuidType::class, $original, $expected, AbstractPlatform::class, 'getBinaryTypeDeclarationSQL');
     }
 
     /**
@@ -68,6 +78,6 @@ class BinaryGuidTypeTest extends AbstractTypeTest
 
     public function testGetName()
     {
-        parent::testGetName(BinaryGuidType::class);
+        parent::testGetName(BinaryGuidType::class, BinaryGuidType::NAME);
     }
 }

@@ -3,14 +3,14 @@
 namespace MS\DoctrineTypes\Tests\DBAL;
 
 use Doctrine\DBAL\Platforms\AbstractPlatform;
-use MS\DoctrineTypes\DBAL\Types\BinaryGuidType;
+use Doctrine\DBAL\Types\Type;
 
 abstract class AbstractTypeTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @param string $class
      *
-     * @return BinaryGuidType $type
+     * @return Type $type
      */
     protected function getType($class)
     {
@@ -22,32 +22,43 @@ abstract class AbstractTypeTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * @param string $class
+     * @param array $methods
+     *
      * @return AbstractPlatform|\PHPUnit_Framework_MockObject_MockObject
      */
-    protected function getPlatform($methods)
+    protected function getPlatform($class = AbstractPlatform::class, $methods = array())
     {
-        return $this
-            ->getMockBuilder(AbstractPlatform::class)
-            ->setMethods($methods)
-            ->getMockForAbstractClass();
+        $mock = $this
+            ->getMockBuilder($class)
+            ->setMethods($methods);
+
+        $rc = new \ReflectionClass($class);
+        if ($rc->isAbstract()) {
+            $mock = $mock->getMockForAbstractClass();
+        } else {
+            $mock = $mock->getMock();
+        }
+
+        return $mock;
     }
 
 
-    public function testGetSQLDeclaration($class)
+    /**
+     * @param string $class
+     * @param array $original
+     * @param array $expected
+     * @param string $platform
+     */
+    public function testGetSQLDeclaration($class, $original, $expected, $platform = AbstractPlatform::class, $method = null)
     {
-        $expected = array(
-            'length' => 16,
-            'fixed'  => true,
-            'type'   => 'binary',
-        );
-
-        $platform = $this->getPlatform(array('getBinaryTypeDeclarationSQL'));
+        $platform = $this->getPlatform($platform, array($method));
         $platform
             ->expects($this->any())
-            ->method('getBinaryTypeDeclarationSQL')
+            ->method($method)
             ->willReturn($expected);
 
-        $actual = $this->getType($class)->getSQLDeclaration($expected, $platform);
+        $actual = $this->getType($class)->getSQLDeclaration($original, $platform);
 
         $this->assertEquals($expected, $actual);
     }
@@ -56,10 +67,11 @@ abstract class AbstractTypeTest extends \PHPUnit_Framework_TestCase
      * @param string $class
      * @param string $original
      * @param string $expected
+     * @param AbstractPlatform $platform
      */
-    public function testConvertToPHPValue($class, $original = null, $expected = null)
+    public function testConvertToPHPValue($class, $original = null, $expected = null, $platform = AbstractPlatform::class)
     {
-        $platform = $this->getPlatform(array());
+        $platform = $this->getPlatform($platform, array());
 
         $actual = $this->getType($class)->convertToPHPValue($original, $platform);
 
@@ -71,10 +83,11 @@ abstract class AbstractTypeTest extends \PHPUnit_Framework_TestCase
      * @param string $class
      * @param string $original
      * @param string $expected
+     * @param AbstractPlatform $platform
      */
-    public function testConvertToDatabaseValue($class, $original = null, $expected = null)
+    public function testConvertToDatabaseValue($class, $original = null, $expected = null, $platform = AbstractPlatform::class)
     {
-        $platform = $this->getPlatform(array());
+        $platform = $this->getPlatform($platform, array());
 
         $actual = $this->getType($class)->convertToDatabaseValue($original, $platform);
 
@@ -82,18 +95,26 @@ abstract class AbstractTypeTest extends \PHPUnit_Framework_TestCase
     }
 
 
-    public function testRequiresSQLCommentHint($class)
+    /**
+     * @param string $class
+     * @param AbstractPlatform $platform
+     */
+    public function testRequiresSQLCommentHint($class, $platform = AbstractPlatform::class)
     {
-        $platform = $this->getPlatform(array());
+        $platform = $this->getPlatform($platform, array());
         $actual = $this->getType($class)->requiresSQLCommentHint($platform);
 
         $this->assertTrue($actual);
     }
 
-    public function testGetName($class)
+    /**
+     * @param string $class
+     * @param string $expected
+     */
+    public function testGetName($class, $expected)
     {
         $actual = $this->getType($class)->getName();
 
-        $this->assertEquals(BinaryGuidType::NAME, $actual);
+        $this->assertEquals($expected, $actual);
     }
 }
