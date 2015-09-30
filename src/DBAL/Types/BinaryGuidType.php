@@ -67,7 +67,7 @@ class BinaryGuidType extends BinaryType
 
         if (strlen($value) === 32) {
             $value = hex2bin($value);
-        } elseif (strlen($value) === 22) {
+        } elseif (strlen($value) <= 24) {
             $value = base64_decode($value);
         }
 

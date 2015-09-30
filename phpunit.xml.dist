@@ -5,7 +5,15 @@
 
     <testsuites>
         <testsuite>
-            <directory>./Tests</directory>
+            <directory>./src/Tests</directory>
         </testsuite>
     </testsuites>
+
+    <filter>
+        <whitelist>
+            <exclude>
+                <directory>./src/Test</directory>
+            </exclude>
+        </whitelist>
+    </filter>
 </phpunit>

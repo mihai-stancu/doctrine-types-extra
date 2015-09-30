@@ -16,6 +16,6 @@
         "doctrine/orm": ">=2.1"
     },
     "autoload": {
-        "psr-4": { "MS\\DoctrineTypes\\": "" }
+        "psr-4": { "MS\\DoctrineTypes\\": "src/" }
     }
 }
