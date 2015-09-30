@@ -1,0 +1,14 @@
+doctrine:
+    dbal:
+        types:
+            binary_guid             : MS\DoctrineTypes\DBAL\Types\BinaryGuidType
+            short_guid              : MS\DoctrineTypes\DBAL\Types\ShortGuidType
+            delta                   : MS\DoctrineTypes\DBAL\Types\DeltaType
+            enum                    : MS\DoctrineTypes\DBAL\Types\EnumType
+            set                     : MS\DoctrineTypes\DBAL\Types\SetType
+        mapping_types:
+            binary_guid             : binary_guid
+            short_guid              : short_guid
+            delta                   : delta
+            enum                    : enum
+            set                     : set

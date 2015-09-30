@@ -1,6 +1,13 @@
 <?php
 
-namespace MS\Doctrine\DBAL\Types;
+/*
+ * Copyright (c) 2015 Mihai Stancu <stancu.t.mihai@gmail.com>
+ *
+ * This source file is subject to the license that is bundled with this source
+ * code in the LICENSE.md file.
+ */
+
+namespace MS\DoctrineTypes\DBAL\Types;
 
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Platforms\MySqlPlatform;
@@ -18,7 +25,7 @@ class ShortGuidType extends GuidType
      */
     public function getSQLDeclaration(array $fieldDeclaration, AbstractPlatform $platform)
     {
-        if ($platform InstanceOf MySqlPlatform) {
+        if ($platform instanceof MySqlPlatform) {
             return 'BIGINT';
         } else {
             return parent::getSQLDeclaration($fieldDeclaration, $platform);
@@ -34,7 +41,7 @@ class ShortGuidType extends GuidType
     public function convertToPHPValue($value, AbstractPlatform $platform)
     {
         switch (true) {
-            case ($platform InstanceOf MySqlPlatform):
+            case ($platform instanceof MySqlPlatform):
                 return $value;
             default:
                 return parent::convertToPHPValue($value, $platform);
@@ -50,7 +57,7 @@ class ShortGuidType extends GuidType
     public function convertToDatabaseValue($value, AbstractPlatform $platform)
     {
         switch (true) {
-            case ($platform InstanceOf MySqlPlatform):
+            case ($platform instanceof MySqlPlatform):
                 return $value;
             default:
                 return parent::convertToDatabaseValue($value, $platform);

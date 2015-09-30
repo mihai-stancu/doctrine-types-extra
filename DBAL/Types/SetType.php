@@ -1,16 +1,22 @@
 <?php
 
-namespace MS\Doctrine\DBAL\Types;
+/*
+ * Copyright (c) 2015 Mihai Stancu <stancu.t.mihai@gmail.com>
+ *
+ * This source file is subject to the license that is bundled with this source
+ * code in the LICENSE.md file.
+ */
+
+namespace MS\DoctrineTypes\DBAL\Types;
 
 use Doctrine\DBAL\DBALException;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Platforms\MySqlPlatform;
-use MS\Doctrine\Set;
+use MS\DoctrineTypes\Set;
 
 class SetType extends EnumType
 {
     const NAME = 'set';
-
 
     /**
      * @param AbstractPlatform $platform
@@ -19,13 +25,13 @@ class SetType extends EnumType
      */
     protected function checkPlatform($platform)
     {
-        if (!($platform InstanceOf MySqlPlatform)) {
-            throw new DBALException('SETs are not supported by ' . $platform->getName() . '.');
+        if (!($platform instanceof MySqlPlatform)) {
+            throw new DBALException('SETs are not supported by '.$platform->getName().'.');
         }
     }
 
     /**
-     * @param Set            $values
+     * @param Set              $values
      * @param AbstractPlatform $platform
      *
      * @return string|null
@@ -33,10 +39,10 @@ class SetType extends EnumType
     public function convertToDatabaseValue($values, AbstractPlatform $platform)
     {
         if (null === $values || 0 === $values  || '' === $values || array() === $values) {
-            return null;
+            return;
         }
 
-        return implode(',', (array)$values->get());
+        return implode(',', (array) $values->get());
     }
 
     /**
@@ -60,7 +66,6 @@ class SetType extends EnumType
         return $values;
     }
 
-
     /**
      * @param array            $fieldDeclaration
      * @param AbstractPlatform $platform
@@ -78,9 +83,8 @@ class SetType extends EnumType
             $values[] = $platform->quoteStringLiteral($value);
         }
 
-        return 'SET(' . implode(',', $values) . ')';
+        return 'SET('.implode(',', $values).')';
     }
-
 
     /**
      * @param AbstractPlatform $platform
@@ -91,7 +95,6 @@ class SetType extends EnumType
     {
         return true;
     }
-
 
     /**
      * @return string

@@ -1,6 +1,6 @@
 {
     "name": "mihai-stancu/doctrine-types-extra",
-    "type": "library",
+    "type": "bundle",
     "description": "Doctrine2 storing `UUID()` as BINARY(16) and `UUID_SHORT()` as BIGINT for MySQL.",
     "keywords": ["binary_guid", "binary_uuid", "short_guid", "short_uuid", "uuid", "guid", "doctrine2", "mysql", "binary", "bigint"],
     "license": "MIT",
@@ -12,9 +12,10 @@
     ],
     "require": {
         "php": ">=5.4.0",
+
         "doctrine/orm": ">=2.1"
     },
     "autoload": {
-        "psr-4": { "MS\\Doctrine\\": "src/" }
+        "psr-4": { "MS\\DoctrineTypes\\": "" }
     }
 }

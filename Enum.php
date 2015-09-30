@@ -1,6 +1,13 @@
 <?php
 
-namespace MS\Doctrine;
+/*
+ * Copyright (c) 2015 Mihai Stancu <stancu.t.mihai@gmail.com>
+ *
+ * This source file is subject to the license that is bundled with this source
+ * code in the LICENSE.md file.
+ */
+
+namespace MS\DoctrineTypes;
 
 use Doctrine\DBAL\Exception\InvalidArgumentException;
 
@@ -10,7 +17,6 @@ class Enum implements \Serializable, \JsonSerializable
     {
         call_user_func_array(array($this, 'set'), func_get_args());
     }
-
 
     /**
      * @var array|string[] List of allowed values populated via reflection.
@@ -30,7 +36,7 @@ class Enum implements \Serializable, \JsonSerializable
             foreach ($constants as $name => $value) {
                 list($value, $index) = static::processValue($name, $value, $position);
                 static::$values[static::class][$index] = $value;
-                $position++;
+                ++$position;
             }
 
             if (!isset(static::$values[static::class][0])) {
@@ -59,7 +65,6 @@ class Enum implements \Serializable, \JsonSerializable
         }
     }
 
-
     /**
      * @var string
      */
@@ -80,7 +85,6 @@ class Enum implements \Serializable, \JsonSerializable
     {
         $this->set($value);
     }
-
 
     /**
      * @param bool $asInteger
@@ -122,7 +126,6 @@ class Enum implements \Serializable, \JsonSerializable
         }
     }
 
-
     /** Integrating with PHP behaviors */
 
     /**
@@ -130,9 +133,8 @@ class Enum implements \Serializable, \JsonSerializable
      */
     public function __toString()
     {
-        return (string)$this->value;
+        return (string) $this->value;
     }
-
 
     /** Implementing Serializable */
 
@@ -151,7 +153,6 @@ class Enum implements \Serializable, \JsonSerializable
     {
         $this->set(unserialize($data));
     }
-
 
     /** Implementing JsonSerializable */
 

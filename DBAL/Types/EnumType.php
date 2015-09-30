@@ -1,6 +1,13 @@
 <?php
 
-namespace MS\Doctrine\DBAL\Types;
+/*
+ * Copyright (c) 2015 Mihai Stancu <stancu.t.mihai@gmail.com>
+ *
+ * This source file is subject to the license that is bundled with this source
+ * code in the LICENSE.md file.
+ */
+
+namespace MS\DoctrineTypes\DBAL\Types;
 
 use Doctrine\DBAL\DBALException;
 use Doctrine\DBAL\Exception\InvalidArgumentException;
@@ -46,7 +53,6 @@ class EnumType extends Type
         );
     }
 
-
     /**
      * @param AbstractPlatform $platform
      *
@@ -54,12 +60,11 @@ class EnumType extends Type
      */
     protected function checkPlatform($platform)
     {
-        if ($platform InstanceOf DB2Platform or $platform InstanceOf OraclePlatform
-            or $platform InstanceOf SqlitePlatform or $platform InstanceOf SQLServerPlatform) {
+        if ($platform instanceof DB2Platform or $platform instanceof OraclePlatform
+            or $platform instanceof SqlitePlatform or $platform instanceof SQLServerPlatform) {
             throw new DBALException(vsprintf('ENUMs are not supported by %1$s.', array($platform->getName())));
         }
     }
-
 
     /**
      * @param mixed            $value
@@ -70,10 +75,10 @@ class EnumType extends Type
     public function convertToDatabaseValue($value, AbstractPlatform $platform)
     {
         if ($value === null) {
-            return null;
+            return;
         }
 
-        return (string)$value;
+        return (string) $value;
     }
 
     /**
@@ -93,7 +98,6 @@ class EnumType extends Type
         return $value;
     }
 
-
     /**
      * @param array            $fieldDeclaration
      * @param AbstractPlatform $platform
@@ -111,9 +115,8 @@ class EnumType extends Type
             $values[] = $platform->quoteStringLiteral($value);
         }
 
-        return 'ENUM(' . implode(',', $values) . ')';
+        return 'ENUM('.implode(',', $values).')';
     }
-
 
     /**
      * @param AbstractPlatform $platform
@@ -124,7 +127,6 @@ class EnumType extends Type
     {
         return true;
     }
-
 
     /**
      * @return string

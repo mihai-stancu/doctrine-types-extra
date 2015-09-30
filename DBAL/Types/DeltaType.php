@@ -1,15 +1,20 @@
 <?php
 
-namespace MS\Doctrine\DBAL\Types;
+/*
+ * Copyright (c) 2015 Mihai Stancu <stancu.t.mihai@gmail.com>
+ *
+ * This source file is subject to the license that is bundled with this source
+ * code in the LICENSE.md file.
+ */
+
+namespace MS\DoctrineTypes\DBAL\Types;
 
 use Doctrine\DBAL\Platforms\AbstractPlatform;
-use Doctrine\DBAL\Platforms\MySqlPlatform;
 use Doctrine\DBAL\Types\IntegerType;
 
 class DeltaType extends IntegerType
 {
     const NAME = 'delta';
-
 
     /**
      * @return bool
@@ -29,7 +34,7 @@ class DeltaType extends IntegerType
     public function convertToDatabaseValueSQL($sqlExpr, AbstractPlatform $platform, $columnName = null)
     {
         if ($columnName != null) {
-            $sqlExpr = $columnName . ' + ' . $sqlExpr;
+            $sqlExpr = $columnName.' + '.$sqlExpr;
         }
 
         return parent::convertToDatabaseValueSQL($sqlExpr, $platform, $columnName);

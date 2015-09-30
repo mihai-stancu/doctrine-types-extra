@@ -1,6 +1,13 @@
 <?php
 
-namespace MS\Doctrine;
+/*
+ * Copyright (c) 2015 Mihai Stancu <stancu.t.mihai@gmail.com>
+ *
+ * This source file is subject to the license that is bundled with this source
+ * code in the LICENSE.md file.
+ */
+
+namespace MS\DoctrineTypes;
 
 use Doctrine\DBAL\Exception\InvalidArgumentException;
 
@@ -18,7 +25,6 @@ class Set extends Enum
         return array($value, pow(2, $position));
     }
 
-
     /**
      * @param bool $asInteger
      *
@@ -26,7 +32,7 @@ class Set extends Enum
      */
     public function get($asInteger = false)
     {
-        $values = (array)$this->value;
+        $values = (array) $this->value;
 
         if ($asInteger) {
             $result = 0;
@@ -59,7 +65,7 @@ class Set extends Enum
             return;
         }
 
-        if ($values InstanceOf Set) {
+        if ($values instanceof self) {
             $this->set($values->get());
         }
 
@@ -153,12 +159,11 @@ class Set extends Enum
         return $newValues;
     }
 
-
     /**
      * @return string
      */
     public function __toString()
     {
-        return implode(', ', (array)$this->value);
+        return implode(', ', (array) $this->value);
     }
 }

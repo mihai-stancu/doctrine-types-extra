@@ -1,9 +1,15 @@
 <?php
 
-namespace MS\Doctrine\Tests;
+/*
+ * Copyright (c) 2015 Mihai Stancu <stancu.t.mihai@gmail.com>
+ *
+ * This source file is subject to the license that is bundled with this source
+ * code in the LICENSE.md file.
+ */
 
-use MS\Doctrine\Enum;
-use MS\Doctrine\Set;
+namespace MS\DoctrineTypes\Tests;
+
+use MS\DoctrineTypes\Set;
 
 class SetTest extends EnumTest
 {
@@ -39,7 +45,7 @@ class SetTest extends EnumTest
             $cases[] = array(new ExampleSet($combinations), $value);
         }
         /* SETs by integers */
-        for ($value = (2 * pow(2, max(array_keys($values))) - 1); $value >= 0; $value--) {
+        for ($value = (2 * pow(2, max(array_keys($values))) - 1); $value >= 0; --$value) {
             $cases[] = array(new ExampleSet($value), $value);
         }
 

@@ -1,9 +1,16 @@
 <?php
 
-namespace MS\Doctrine\Tests;
+/*
+ * Copyright (c) 2015 Mihai Stancu <stancu.t.mihai@gmail.com>
+ *
+ * This source file is subject to the license that is bundled with this source
+ * code in the LICENSE.md file.
+ */
 
-use MS\Doctrine\Enum;
-use MS\Doctrine\Set;
+namespace MS\DoctrineTypes\Tests;
+
+use MS\DoctrineTypes\Enum;
+use MS\DoctrineTypes\Set;
 
 class EnumTest extends \PHPUnit_Framework_TestCase
 {
@@ -79,7 +86,6 @@ class EnumTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($object, $decoded);
     }
 }
-
 
 class ExampleEnum extends Enum
 {

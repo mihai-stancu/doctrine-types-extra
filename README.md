@@ -23,10 +23,10 @@ Adding the following lines in your `app/config.yml` (for Symfony2 projects) shou
 doctrine:
     dbal:
         types:
-            binary_guid: MS\Doctrine\DBAL\Types\BinaryGuidType
-            short_guid: MS\Doctrine\DBAL\Types\ShortGuidType
+            binary_guid: MS\DoctrineTypes\DBAL\Types\BinaryGuidType
+            short_guid: MS\DoctrineTypes\DBAL\Types\ShortGuidType
 
-            set: MS\Doctrine\DBAL\Types\SetType
+            set: MS\DoctrineTypes\DBAL\Types\SetType
 
 
         mapping_types:
@@ -53,7 +53,7 @@ or
      * @Id
      * @Column(type="short_guid")
      * @GeneratedValue(strategy="CUSTOM")
-     * @CustomIdGenerator(class="MS\Doctrine\ORM\Id\ShortGuidGenerator")
+     * @CustomIdGenerator(class="MS\DoctrineTypes\ORM\Id\ShortGuidGenerator")
      */
 ```
 
