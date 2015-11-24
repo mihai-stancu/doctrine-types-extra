@@ -11,8 +11,9 @@ namespace MS\DoctrineTypes\DBAL\Types;
 
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Types\BinaryType;
+use Doctrine\DBAL\Types\GuidType;
 
-class BinaryGuidType extends BinaryType
+class BinaryGuidType extends GuidType
 {
     const NAME = 'binary_guid';
 
