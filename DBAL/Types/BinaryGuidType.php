@@ -25,11 +25,15 @@ class BinaryGuidType extends GuidType
      */
     public function getSQLDeclaration(array $field, AbstractPlatform $platform)
     {
-        $field['length'] = 16;
-        $field['fixed'] = true;
-        $field['type'] = 'binary';
+        if ($platform->hasNativeGuidType()) {
+            return parent::getSQLDeclaration($field, $platform);
+        } else {
+            $field['length'] = 16;
+            $field['fixed'] = true;
+            $field['type'] = 'binary';
 
-        return $platform->getBinaryTypeDeclarationSQL($field);
+            return $platform->getBinaryTypeDeclarationSQL($field);
+        }
     }
 
     /**
