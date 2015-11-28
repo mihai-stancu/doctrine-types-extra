@@ -19,18 +19,6 @@ class SetType extends EnumType
     const NAME = 'set';
 
     /**
-     * @param AbstractPlatform $platform
-     *
-     * @throws DBALException
-     */
-    protected function checkPlatform($platform)
-    {
-        if (!($platform instanceof MySqlPlatform)) {
-            throw new DBALException('SETs are not supported by '.$platform->getName().'.');
-        }
-    }
-
-    /**
      * @param Set              $values
      * @param AbstractPlatform $platform
      *
@@ -42,7 +30,11 @@ class SetType extends EnumType
             return;
         }
 
-        return implode(',', (array) $values->get());
+        if ($platform instanceof MySqlPlatform) {
+            return implode(',', (array) $values->get());
+        }
+
+        return $values->get(true);
     }
 
     /**
@@ -57,7 +49,9 @@ class SetType extends EnumType
             return array();
         }
 
-        $values = explode(',', $values);
+        if ($platform instanceof MySqlPlatform) {
+            $values = explode(',', $values);
+        }
 
         if (!empty($className = static::DATA_CLASS)) {
             return new $className($values);
@@ -76,14 +70,16 @@ class SetType extends EnumType
      */
     public function getSqlDeclaration(array $fieldDeclaration, AbstractPlatform $platform)
     {
-        $this->checkPlatform($platform);
-
         $values = array();
         foreach ($this->getValues($fieldDeclaration) as $value) {
             $values[] = $platform->quoteStringLiteral($value);
         }
 
-        return 'SET('.implode(',', $values).')';
+        if ($platform instanceof MySqlPlatform) {
+            return 'SET('.implode(',', $values).')';
+        }
+
+        return $platform->getBigIntTypeDeclarationSQL($fieldDeclaration);
     }
 
     /**

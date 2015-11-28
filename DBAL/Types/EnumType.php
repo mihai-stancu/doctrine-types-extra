@@ -13,6 +13,7 @@ use Doctrine\DBAL\DBALException;
 use Doctrine\DBAL\Exception\InvalidArgumentException;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Platforms\DB2Platform;
+use Doctrine\DBAL\Platforms\MySqlPlatform;
 use Doctrine\DBAL\Platforms\OraclePlatform;
 use Doctrine\DBAL\Platforms\SqlitePlatform;
 use Doctrine\DBAL\Platforms\SQLServerPlatform;
@@ -54,19 +55,6 @@ class EnumType extends Type
     }
 
     /**
-     * @param AbstractPlatform $platform
-     *
-     * @throws DBALException
-     */
-    protected function checkPlatform($platform)
-    {
-        if ($platform instanceof DB2Platform or $platform instanceof OraclePlatform
-            or $platform instanceof SqlitePlatform or $platform instanceof SQLServerPlatform) {
-            throw new DBALException(vsprintf('ENUMs are not supported by %1$s.', array($platform->getName())));
-        }
-    }
-
-    /**
      * @param mixed            $value
      * @param AbstractPlatform $platform
      *
@@ -78,7 +66,11 @@ class EnumType extends Type
             return;
         }
 
-        return (string) $value;
+        if ($platform instanceof MySqlPlatform) {
+            return (string) $value;
+        }
+
+        return $value->get(true);
     }
 
     /**
@@ -108,14 +100,16 @@ class EnumType extends Type
      */
     public function getSqlDeclaration(array $fieldDeclaration, AbstractPlatform $platform)
     {
-        $this->checkPlatform($platform);
-
         $values = array();
         foreach ($this->getValues($fieldDeclaration) as $value) {
             $values[] = $platform->quoteStringLiteral($value);
         }
 
-        return 'ENUM('.implode(',', $values).')';
+        if ($platform InstanceOf MySqlPlatform) {
+            return 'ENUM('.implode(',', $values).')';
+        }
+
+        return $platform->getBigIntTypeDeclarationSQL($fieldDeclaration);
     }
 
     /**

@@ -26,6 +26,8 @@ class BinaryGuidType extends GuidType
     public function getSQLDeclaration(array $field, AbstractPlatform $platform)
     {
         if ($platform->hasNativeGuidType()) {
+            $field['type'] = 'guid';
+
             return parent::getSQLDeclaration($field, $platform);
         } else {
             $field['length'] = 16;
@@ -48,6 +50,10 @@ class BinaryGuidType extends GuidType
             return;
         }
 
+        if ($platform->hasNativeGuidType()) {
+            return $value;
+        }
+
         $value = (is_resource($value)) ? stream_get_contents($value) : $value;
         $value = bin2hex($value);
         $value = sscanf($value, '%8s%4s%4s%4s%12s');
@@ -66,6 +72,10 @@ class BinaryGuidType extends GuidType
     {
         if (empty($value)) {
             return;
+        }
+
+        if ($platform->hasNativeGuidType()) {
+            return $value;
         }
 
         $value = str_replace('-', '', $value);
