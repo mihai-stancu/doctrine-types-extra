@@ -12,11 +12,7 @@ namespace MS\DoctrineTypes\DBAL\Types;
 use Doctrine\DBAL\DBALException;
 use Doctrine\DBAL\Exception\InvalidArgumentException;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
-use Doctrine\DBAL\Platforms\DB2Platform;
 use Doctrine\DBAL\Platforms\MySqlPlatform;
-use Doctrine\DBAL\Platforms\OraclePlatform;
-use Doctrine\DBAL\Platforms\SqlitePlatform;
-use Doctrine\DBAL\Platforms\SQLServerPlatform;
 use Doctrine\DBAL\Types\Type;
 
 class EnumType extends Type
@@ -105,7 +101,7 @@ class EnumType extends Type
             $values[] = $platform->quoteStringLiteral($value);
         }
 
-        if ($platform InstanceOf MySqlPlatform) {
+        if ($platform instanceof MySqlPlatform) {
             return 'ENUM('.implode(',', $values).')';
         }
 

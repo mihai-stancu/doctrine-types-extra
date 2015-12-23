@@ -1,9 +1,15 @@
 <?php
 
+/*
+ * Copyright (c) 2015 Mihai Stancu <stancu.t.mihai@gmail.com>
+ *
+ * This source file is subject to the license that is bundled with this source
+ * code in the LICENSE.md file.
+ */
+
 namespace MS\DoctrineTypes\Tests\DBAL;
 
 use Doctrine\DBAL\Platforms\AbstractPlatform;
-use Doctrine\DBAL\Platforms\MySqlPlatform;
 use MS\DoctrineTypes\DBAL\Types\BinaryGuidType;
 
 class BinaryGuidTypeTest extends AbstractTypeTest
@@ -12,13 +18,13 @@ class BinaryGuidTypeTest extends AbstractTypeTest
     {
         $original = array(
             'length' => 255,
-            'fixed'  => false,
-            'type'   => 'varchar',
+            'fixed' => false,
+            'type' => 'varchar',
         );
         $expected = array(
             'length' => 16,
-            'fixed'  => true,
-            'type'   => 'binary',
+            'fixed' => true,
+            'type' => 'binary',
         );
         parent::testGetSQLDeclaration(BinaryGuidType::class, $original, $expected, AbstractPlatform::class, 'getBinaryTypeDeclarationSQL');
     }
@@ -46,7 +52,6 @@ class BinaryGuidTypeTest extends AbstractTypeTest
         parent::testConvertToPHPValue(BinaryGuidType::class, $original, $expected);
     }
 
-
     /**
      * @return array
      */
@@ -69,7 +74,6 @@ class BinaryGuidTypeTest extends AbstractTypeTest
     {
         parent::testConvertToDatabaseValue(BinaryGuidType::class, $original, $expected);
     }
-
 
     public function testRequiresSQLCommentHint()
     {

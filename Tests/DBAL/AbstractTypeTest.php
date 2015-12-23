@@ -1,5 +1,12 @@
 <?php
 
+/*
+ * Copyright (c) 2015 Mihai Stancu <stancu.t.mihai@gmail.com>
+ *
+ * This source file is subject to the license that is bundled with this source
+ * code in the LICENSE.md file.
+ */
+
 namespace MS\DoctrineTypes\Tests\DBAL;
 
 use Doctrine\DBAL\Platforms\AbstractPlatform;
@@ -23,7 +30,7 @@ abstract class AbstractTypeTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @param string $class
-     * @param array $methods
+     * @param array  $methods
      *
      * @return AbstractPlatform|\PHPUnit_Framework_MockObject_MockObject
      */
@@ -43,11 +50,10 @@ abstract class AbstractTypeTest extends \PHPUnit_Framework_TestCase
         return $mock;
     }
 
-
     /**
      * @param string $class
-     * @param array $original
-     * @param array $expected
+     * @param array  $original
+     * @param array  $expected
      * @param string $platform
      */
     public function testGetSQLDeclaration($class, $original, $expected, $platform = AbstractPlatform::class, $method = null)
@@ -64,9 +70,9 @@ abstract class AbstractTypeTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @param string $class
-     * @param string $original
-     * @param string $expected
+     * @param string           $class
+     * @param string           $original
+     * @param string           $expected
      * @param AbstractPlatform $platform
      */
     public function testConvertToPHPValue($class, $original = null, $expected = null, $platform = AbstractPlatform::class)
@@ -78,11 +84,10 @@ abstract class AbstractTypeTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expected, $actual);
     }
 
-
     /**
-     * @param string $class
-     * @param string $original
-     * @param string $expected
+     * @param string           $class
+     * @param string           $original
+     * @param string           $expected
      * @param AbstractPlatform $platform
      */
     public function testConvertToDatabaseValue($class, $original = null, $expected = null, $platform = AbstractPlatform::class)
@@ -94,9 +99,8 @@ abstract class AbstractTypeTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expected, $actual);
     }
 
-
     /**
-     * @param string $class
+     * @param string           $class
      * @param AbstractPlatform $platform
      */
     public function testRequiresSQLCommentHint($class, $platform = AbstractPlatform::class)

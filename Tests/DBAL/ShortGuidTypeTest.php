@@ -1,5 +1,12 @@
 <?php
 
+/*
+ * Copyright (c) 2015 Mihai Stancu <stancu.t.mihai@gmail.com>
+ *
+ * This source file is subject to the license that is bundled with this source
+ * code in the LICENSE.md file.
+ */
+
 namespace MS\DoctrineTypes\Tests\DBAL;
 
 use Doctrine\DBAL\Platforms\AbstractPlatform;
@@ -56,7 +63,6 @@ class ShortGuidTypeTest extends AbstractTypeTest
         parent::testConvertToPHPValue(ShortGuidType::class, $original, $expected, $platform);
     }
 
-
     /**
      * @return array
      */
@@ -81,7 +87,6 @@ class ShortGuidTypeTest extends AbstractTypeTest
     {
         parent::testConvertToDatabaseValue(ShortGuidType::class, $original, $expected, $platform);
     }
-
 
     public function testRequiresSQLCommentHint()
     {
