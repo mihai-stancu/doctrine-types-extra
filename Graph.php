@@ -39,7 +39,7 @@ class Graph extends Enum
 
                 list($_from, $_to) = $_edge;
                 $_edge = $_from.' -> '.$_to;
-                static::$edges[$_edge];
+                static::$edges[$_edge] = true;
             }
         }
 
