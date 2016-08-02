@@ -11,17 +11,17 @@
         }
     ],
     "require": {
-        "php": "^5.5.9",
+        "php": ">=5.5.9",
 
         "doctrine/orm": "^2",
-        "symfony/dependency-injection": "~2@dev|~3@dev",
-        "symfony/config": "~2@dev|~3@dev",
-        "symfony/http-kernel": "~2@dev|~3@dev",
+        "symfony/dependency-injection": "~2|~3",
+        "symfony/config": "~2|~3",
+        "symfony/http-kernel": "~2|~3",
 
-        "symfony/filesystem": "~2@dev|~3@dev",
-        "symfony/event-dispatcher": "~2@dev|~3@dev",
-        "symfony/http-foundation": "~2@dev|~3@dev",
-        "symfony/debug": "~2@dev|~3@dev"
+        "symfony/filesystem": "~2|~3",
+        "symfony/event-dispatcher": "~2|~3",
+        "symfony/http-foundation": "~2|~3",
+        "symfony/debug": "~2|~3"
     },
     "autoload": {
         "psr-4": { "MS\\DoctrineTypes\\": "" }
