@@ -7,14 +7,22 @@
  * code in the LICENSE.md file.
  */
 
-namespace MS\DoctrineTypes\Tests\DBAL;
+namespace MS\DoctrineTypes\Tests\DBAL\Types;
 
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Platforms\MySqlPlatform;
 use MS\DoctrineTypes\DBAL\Types\ShortGuidType;
 
-class ShortGuidTypeTest extends AbstractTypeTest
+class ShortGuidTypeTest extends \PHPUnit_Framework_TestCase
 {
+    /** @var  GenericTypeTest */
+    protected $typeTest;
+
+    public function __construct()
+    {
+        $this->typeTest = new GenericTypeTest();
+    }
+
     /**
      * @return array
      */
@@ -35,7 +43,7 @@ class ShortGuidTypeTest extends AbstractTypeTest
      */
     public function testGetSQLDeclaration($original, $expected, $platform = AbstractPlatform::class)
     {
-        parent::testGetSQLDeclaration(ShortGuidType::class, $original, $expected, $platform, 'getGuidTypeDeclarationSQL');
+        $this->typeTest->testGetSQLDeclaration(ShortGuidType::class, $original, $expected, $platform, 'getGuidTypeDeclarationSQL');
     }
 
     /**
@@ -60,7 +68,7 @@ class ShortGuidTypeTest extends AbstractTypeTest
      */
     public function testConvertToPHPValue($original = null, $expected = null, $platform = AbstractPlatform::class)
     {
-        parent::testConvertToPHPValue(ShortGuidType::class, $original, $expected, $platform);
+        $this->typeTest->testConvertToPHPValue(ShortGuidType::class, $original, $expected, $platform);
     }
 
     /**
@@ -85,16 +93,16 @@ class ShortGuidTypeTest extends AbstractTypeTest
      */
     public function testConvertToDatabaseValue($original = null, $expected = null, $platform = AbstractPlatform::class)
     {
-        parent::testConvertToDatabaseValue(ShortGuidType::class, $original, $expected, $platform);
+        $this->typeTest->testConvertToDatabaseValue(ShortGuidType::class, $original, $expected, $platform);
     }
 
     public function testRequiresSQLCommentHint()
     {
-        parent::testRequiresSQLCommentHint(ShortGuidType::class);
+        $this->typeTest->testRequiresSQLCommentHint(ShortGuidType::class);
     }
 
     public function testGetName()
     {
-        parent::testGetName(ShortGuidType::class, ShortGuidType::NAME);
+        $this->typeTest->testGetName(ShortGuidType::class, ShortGuidType::NAME);
     }
 }

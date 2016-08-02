@@ -7,12 +7,12 @@
  * code in the LICENSE.md file.
  */
 
-namespace MS\DoctrineTypes\Tests\DBAL;
+namespace MS\DoctrineTypes\Tests\DBAL\Types;
 
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Types\Type;
 
-abstract class AbstractTypeTest extends \PHPUnit_Framework_TestCase
+class GenericTypeTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @param string $class
@@ -55,6 +55,7 @@ abstract class AbstractTypeTest extends \PHPUnit_Framework_TestCase
      * @param array  $original
      * @param array  $expected
      * @param string $platform
+     * @param string $method
      */
     public function testGetSQLDeclaration($class, $original, $expected, $platform = AbstractPlatform::class, $method = null)
     {

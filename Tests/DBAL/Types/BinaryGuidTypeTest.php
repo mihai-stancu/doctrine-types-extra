@@ -7,13 +7,21 @@
  * code in the LICENSE.md file.
  */
 
-namespace MS\DoctrineTypes\Tests\DBAL;
+namespace MS\DoctrineTypes\Tests\DBAL\Types;
 
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use MS\DoctrineTypes\DBAL\Types\BinaryGuidType;
 
-class BinaryGuidTypeTest extends AbstractTypeTest
+class BinaryGuidTypeTest extends \PHPUnit_Framework_TestCase
 {
+    /** @var  GenericTypeTest */
+    protected $typeTest;
+
+    public function __construct()
+    {
+        $this->typeTest = new GenericTypeTest();
+    }
+
     public function testGetSQLDeclaration()
     {
         $original = array(
@@ -26,7 +34,7 @@ class BinaryGuidTypeTest extends AbstractTypeTest
             'fixed' => true,
             'type' => 'binary',
         );
-        parent::testGetSQLDeclaration(BinaryGuidType::class, $original, $expected, AbstractPlatform::class, 'getBinaryTypeDeclarationSQL');
+        $this->typeTest->testGetSQLDeclaration(BinaryGuidType::class, $original, $expected, AbstractPlatform::class, 'getBinaryTypeDeclarationSQL');
     }
 
     /**
@@ -49,7 +57,7 @@ class BinaryGuidTypeTest extends AbstractTypeTest
      */
     public function testConvertToPHPValue($original = null, $expected = null)
     {
-        parent::testConvertToPHPValue(BinaryGuidType::class, $original, $expected);
+        $this->typeTest->testConvertToPHPValue(BinaryGuidType::class, $original, $expected);
     }
 
     /**
@@ -72,16 +80,16 @@ class BinaryGuidTypeTest extends AbstractTypeTest
      */
     public function testConvertToDatabaseValue($original = null, $expected = null)
     {
-        parent::testConvertToDatabaseValue(BinaryGuidType::class, $original, $expected);
+        $this->typeTest->testConvertToDatabaseValue(BinaryGuidType::class, $original, $expected);
     }
 
     public function testRequiresSQLCommentHint()
     {
-        parent::testRequiresSQLCommentHint(BinaryGuidType::class);
+        $this->typeTest->testRequiresSQLCommentHint(BinaryGuidType::class);
     }
 
     public function testGetName()
     {
-        parent::testGetName(BinaryGuidType::class, BinaryGuidType::NAME);
+        $this->typeTest->testGetName(BinaryGuidType::class, BinaryGuidType::NAME);
     }
 }
